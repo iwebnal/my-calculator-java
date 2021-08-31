@@ -3,7 +3,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class CalculatorEngine implements ActionListener {
-    SimpleCalculator parent; // Ссылка на SimpleCalculator
+    SimpleCalculator parent; // Ссылка на SimpleCalculator (на окно калькулятора)
+
+    char selectedAction = ' '; // +, -, / или *
+    double currentResult = 0;
 
     CalculatorEngine(SimpleCalculator parent) {
         this.parent = parent;
@@ -11,37 +14,78 @@ public class CalculatorEngine implements ActionListener {
 
     public void actionPerformed(ActionEvent e) {
 
-        JTextField myDisplayField = null;
-        JButton clickedButton = null;
-
-        Object eventSource = e.getSource();
-
-        if(eventSource instanceof JButton) {
-            // Получаем источник события (текущего действия)
-            // Приводим тип возвращаемого Object к
-            // типу JButton, размещая тип в скобках перед именем метода
-            clickedButton = (JButton) eventSource;
-        }else if(eventSource instanceof JTextField) {
-            myDisplayField = (JTextField) eventSource;
-        }
-
-        // Получаем надпись на кнопке
-        String clickedButtonLabel = clickedButton.getText();
+//        JTextField myDisplayField = null;
+        JButton clickedButton = (JButton) e.getSource();
 
         // Получить текущий текст из поля вывода (“дисплея”)
         // калькулятора
         String dispFieldText = parent.displayField.getText();
 
-        parent.displayField.setText(dispFieldText + clickedButtonLabel);
+        double displayValue = 0;
+
+        // Получить число из дисплея калькулятора,
+        // если он не пустой
+        if(!"".equals(dispFieldText)) {
+            displayValue = Double.parseDouble(dispFieldText);
+        }
+
+        Object src = e.getSource();
+
+        if(src == parent.buttonPlus) {
+            selectedAction = '+';
+            currentResult = displayValue;
+            parent.displayField.setText("");
+        } else if(src == parent.buttonMinus) {
+            selectedAction = '-';
+            currentResult = displayValue;
+            parent.displayField.setText("");
+        } else if(src == parent.buttonDivide) {
+            selectedAction = '/';
+            currentResult  = displayValue;
+            parent.displayField.setText("");
+        } else if(src == parent.buttonMultiply) {
+            selectedAction = '*';
+            currentResult = displayValue;
+            parent.displayField.setText("");
+        } else if (src == parent.buttonClear) {
+            selectedAction = 'C';
+            parent.displayField.setText("");
+        } else if(src == parent.buttonEqual) {
+            // Совершить арифметическое действие, в зависимости
+            // от selectedAction, обновить переменную currentResult
+            // и показать результат на дисплее
+            if(selectedAction == '+') {
+                currentResult += displayValue;
+                // Сконвертировать результат в строку, добавляя его
+                // к пустой строке и показать его
+                parent.displayField.setText("" + currentResult);
+            } else if(selectedAction == '-') {
+                currentResult -= displayValue;
+                parent.displayField.setText("" + currentResult);
+            } else if(selectedAction == '/') {
+                currentResult /= displayValue;
+                parent.displayField.setText("" + currentResult);
+            } else if(selectedAction == '*') {
+                currentResult *= displayValue;
+                parent.displayField.setText("" + currentResult);
+            } else if(src == parent.buttonClear) {
+                parent.displayField.setText("");
+            }
+        } else {
+            // Получаем надпись на кнопке
+            String clickedButtonLabel = clickedButton.getText();
+            parent.displayField.setText(dispFieldText + clickedButtonLabel);
+        }
+
 
         // Добавляем надпись на кнопке к тексту окна сообщения
-        JOptionPane.showConfirmDialog(
-                null,
-                "You pressed " +
-                clickedButtonLabel,
-                "Just a test",
-                JOptionPane.PLAIN_MESSAGE
-        );
+//        JOptionPane.showConfirmDialog(
+//                null,
+//                "You pressed " +
+//                clickedButtonLabel,
+//                "Just a test",
+//                JOptionPane.PLAIN_MESSAGE
+//        );
     }
 
 }
