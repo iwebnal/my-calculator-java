@@ -122,7 +122,6 @@ public class SimpleCalculator {
         buttonDivide.addActionListener(calcEngine);
         buttonMultiply.addActionListener(calcEngine);
 
-        buttonPoint.addActionListener(calcEngine);
         buttonEqual.addActionListener(calcEngine);
 
         buttonClear.addActionListener(calcEngine);
